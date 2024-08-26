@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,7 @@ Route::get('/', function () {
 });
 
 
-Auth::routes();
+// Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('/orders', 'OrderController');          // orders.index
@@ -28,14 +29,18 @@ Route::resource('/users', 'UserController');            // users.index
 Route::resource('/companies', 'CompanyController');     // companies.index
 Route::resource('/transactions', 'TransactionController');     // companies.index
 
-Auth::routes();
+// Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Auth::routes();
+// Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 //addition ni joshua
-use App\Http\Controllers\UserController;
 
 Route::resource('users', UserController::class);
+
+// Custom route for UserController
+Route::controller(UserController::class)->group(function () {
+    Route::post('/user/store', 'store'); // Route for add user form to insert user in users table
+});

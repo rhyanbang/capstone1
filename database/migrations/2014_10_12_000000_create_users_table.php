@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('user_id');
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone');
             $table->string('password');
             $table->tinyInteger('is_admin')->default(2); // casher
             $table->rememberToken();

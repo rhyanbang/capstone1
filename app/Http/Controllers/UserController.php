@@ -60,13 +60,14 @@ class UserController extends Controller
             'is_admin' => $validated['is_admin']
         ]);
 
+        $users = User::all(); // Fetch all users from users table
 
         if ($user) {
             // If user successfully inserted in database, code here...
-            return back()->with('User successfully saved.');
+            return back()->with('message_success', 'User successfully saved.')->with('users', $users);
         } else {
             // If user failed to insert in database, code here...
-            return back()->with('Failed to save user.');
+            return back()->with('message_failed', 'Failed to save user.')->with('users', $users);
         }
     }
 

@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\User;
 
 class UserController extends Controller
 {
@@ -13,10 +14,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        // Variable $users when passing to web page using compact(),
+        // the string name inside of compact is the same as variable
+        // but with quotation either double or single and no dollar sign.
 
-
-        return view('users.index');
+        $users = User::all(); // Fetch all users from users table
+        return view('users.index', compact('users')); // Return web page called index from users folder with users data
     }
 
     /**
@@ -37,13 +40,34 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-       $users = User::create($request->all());
+        // Validate values from form to add new user
+        // Call each field name attribute and set rules for each
+        $validated = $request->validate([
+            'name' => ['required'],
+            'email' => ['required', 'email'],
+            'phone' => ['required', 'numeric'],
+            'password' => ['required', 'confirmed'], // Password and confirm password must matched
+            'password_confirmation' => ['required'], // Don't replace the field name password_confirmation
+            'is_admin' => ['required']
+        ]);
 
-       if ($users){
-         return redirect()->back()->with('User Created Successfully');
-       }  
-       return redirect()->back()->with('User Failed Created');
+        // Insert new user on users table by calling the model, each column and validated values from form
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'password' => $validated['password'],
+            'is_admin' => $validated['is_admin']
+        ]);
 
+
+        if ($user) {
+            // If user successfully inserted in database, code here...
+            return back()->with('User successfully saved.');
+        } else {
+            // If user failed to insert in database, code here...
+            return back()->with('Failed to save user.');
+        }
     }
 
     /**
